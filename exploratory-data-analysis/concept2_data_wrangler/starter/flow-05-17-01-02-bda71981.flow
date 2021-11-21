@@ -1,0 +1,144 @@
+{
+  "metadata": {
+    "version": 1,
+    "disable_limits": false
+  },
+  "nodes": [
+    {
+      "node_id": "06e0644b-3a0d-4082-a0e2-eebb184f197f",
+      "type": "SOURCE",
+      "operator": "sagemaker.s3_source_0.1",
+      "parameters": {
+        "dataset_definition": {
+          "__typename": "S3CreateDatasetDefinitionOutput",
+          "datasetSourceType": "S3",
+          "name": "yum-yum-ice-cream.csv",
+          "description": null,
+          "s3ExecutionContext": {
+            "__typename": "S3ExecutionContext",
+            "s3Uri": "s3://sagemaker-studio-x8v5fsikyzd/yum-yum-ice-cream.csv",
+            "s3ContentType": "csv",
+            "s3HasHeader": true,
+            "s3FieldDelimiter": ",",
+            "s3DirIncludesNested": false,
+            "s3AddsFilenameColumn": false
+          }
+        }
+      },
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "default",
+          "sampling": {
+            "sampling_method": "sample_by_limit",
+            "limit_rows": 50000
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "4334656d-869a-4d8a-a40f-0d791950cacb",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.infer_and_cast_type_0.1",
+      "parameters": {},
+      "trained_parameters": {
+        "schema": {
+          "date": "date",
+          "ice_cream_type": "long",
+          "topping": "long",
+          "location": "long"
+        }
+      },
+      "inputs": [
+        {
+          "name": "default",
+          "node_id": "06e0644b-3a0d-4082-a0e2-eebb184f197f",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "ad8bd4c0-1c46-4d77-8348-23d35f3983f2",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.featurize_date_time_0.1",
+      "parameters": {
+        "operator": "Extract columns",
+        "extract_columns_parameters": {
+          "output_mode": "Ordinal",
+          "output_format": "Columns",
+          "infer_datetime_format": false,
+          "date_time_format": "",
+          "year": true,
+          "month": true,
+          "day": true,
+          "hour": false,
+          "minute": false,
+          "second": false,
+          "week_of_year": false,
+          "day_of_year": false,
+          "quarter": false,
+          "input_column": "date",
+          "output_column": ""
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "4334656d-869a-4d8a-a40f-0d791950cacb",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "1dac2d29-5cd7-4a2e-bb4c-26b85fecea18",
+      "type": "VISUALIZATION",
+      "operator": "sagemaker.visualizations.describe_0.1",
+      "parameters": {
+        "name": "summary"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "4334656d-869a-4d8a-a40f-0d791950cacb",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "5850f4a8-8961-49ff-a87f-1c5a96a8fcac",
+      "type": "VISUALIZATION",
+      "operator": "sagemaker.visualizations.histogram_0.1",
+      "parameters": {
+        "name": "histogram",
+        "x_axis": "location"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "ad8bd4c0-1c46-4d77-8348-23d35f3983f2",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    }
+  ]
+}
